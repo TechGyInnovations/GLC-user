@@ -15,13 +15,24 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent, // Make status bar transparent
-        statusBarIconBrightness: Brightness.dark, // White icons on dark background
+        statusBarIconBrightness:
+            Brightness.dark, // White icons on dark background
       ),
     );
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginPage(),
+      builder: (context, child) {
+        SystemChrome.setSystemUIOverlayStyle(
+          SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent, // Make status bar transparent
+            statusBarIconBrightness:
+                Brightness.dark, // White icons on dark background
+          ),
+        );
+        return child!;
+      },
     );
   }
 }
@@ -36,6 +47,10 @@ class _LoginPageState extends State<LoginPage>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool isChecked = false;
+  bool isPasswordHide = true;
 
   @override
   void initState() {
@@ -76,11 +91,13 @@ class _LoginPageState extends State<LoginPage>
     return Scaffold(
         extendBodyBehindAppBar: true, // Extends body behind the status bar
         body: Container(
+          height: double.infinity,
           decoration: BoxDecoration(
+            // color: Colors.grey,
             image: DecorationImage(
               image: AssetImage('assets/background.png'),
               // Replace with your image asset path
-              fit: BoxFit.cover, // Makes the image cover the entire screen
+              fit: BoxFit.fill, // Makes the image cover the entire screen
             ),
           ),
           child: SingleChildScrollView(
@@ -151,10 +168,12 @@ class _LoginPageState extends State<LoginPage>
                         ),
                         const SizedBox(height: 8),
                         TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             hintText: 'Enter Email',
                             filled: true,
                             fillColor: Colors.grey[200],
+
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide.none,
@@ -173,12 +192,17 @@ class _LoginPageState extends State<LoginPage>
                         ),
                         const SizedBox(height: 8),
                         TextField(
-                          obscureText: true,
+                          controller: passwordController,
+                          obscureText: isPasswordHide,
                           decoration: InputDecoration(
                             hintText: 'Enter Password',
                             filled: true,
-                            fillColor: Colors.grey[200],
-                            suffixIcon: Icon(Icons.visibility),
+                            fillColor: Colors.grey[200], // password visible condition and icon change
+                            suffixIcon: IconButton(icon: Icon(isPasswordHide ? Icons.visibility : Icons.visibility_off),onPressed: () {
+                              setState(() {
+                                isPasswordHide = !isPasswordHide;
+                              });
+                            },),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide.none,
@@ -192,12 +216,22 @@ class _LoginPageState extends State<LoginPage>
                           children: [
                             Row(
                               children: [
-                                Checkbox(value: false, onChanged: (value) {}),
+                                Checkbox(activeColor:Colors.red,
+                                    value: isChecked,
+                                    onChanged: (value) {
+                                      isChecked = value!; // checkbox check changed
+                                  setState(() {
+
+                                  });
+                                    }),
                                 const Text('Remember Me'),
                               ],
                             ),
                             TextButton(
-                              onPressed: () { Navigator.pushNamed(context, AppRoutes.forgot_password);},
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AppRoutes.forgot_password);
+                              },
                               child: const Text(
                                 'Forgot Password?',
                                 style: TextStyle(color: Colors.green),
@@ -210,55 +244,72 @@ class _LoginPageState extends State<LoginPage>
                   ),
                   const SizedBox(height: 20),
                   // Login Button with Scale Animation
-                  Center(
-                    child: ScaleTransition(
-                      scale: _fadeAnimation,
-                      child: SizedBox(
-                        width: double.infinity,
-                        // Use full width of the parent container
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.otp);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[200],
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Center(
+                        child: ScaleTransition(
+                          scale: _fadeAnimation,
+                          child: SizedBox(
+                            width: double.infinity,
+                            // Use full width of the parent container
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (validations()) {
+                                  Navigator.pushNamed(context, AppRoutes.otp);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:(emailController.text.trim().isNotEmpty && passwordController.text.trim().isNotEmpty) ? Colors.green : Colors.grey[200],
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            'Login',
-                            style: TextStyle(color: Colors.black),
-
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Sign Up Section
-                  Center(
-                    child: Text.rich(
-                      TextSpan(
-                        text: "Don't have an account? ",
-                        style: TextStyle(color: Colors.grey),
-                        children: [
+                      const SizedBox(height: 20),
+                      // Sign Up Section
+                      Center(
+                        child: Text.rich(
                           TextSpan(
-                            text: 'Sign Up',
-                            style: TextStyle(color: Colors.black),
-                            recognizer: TapGestureRecognizer()..onTap = () {
-                              Navigator.pushNamed(context, AppRoutes.signUp);
-                            },
+                            text: "Don't have an account? ",
+                            style: TextStyle(color: Colors.grey),
+                            children: [
+                              TextSpan(
+                                text: 'Sign Up',
+                                style: TextStyle(color: Colors.black),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pushNamed(context, AppRoutes.signUp);
+                                  },
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
+
                 ],
               ),
             ),
           ),
         ));
+  }
+
+  bool validations() {
+    if (emailController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty) {
+      return true;
+    } else {
+      return true;
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glc/view/farmlands.dart';
 import 'package:glc/view/login/AccountCreatedUi.dart';
 import 'package:glc/view/login/Changepassword.dart';
 import 'package:glc/view/login/DashBoardUi.dart';
@@ -22,6 +23,7 @@ class AppPages {
       AppRoutes.change_password: (context) => ChangePasswordPage(),
       AppRoutes.account_created: (context) => AccountCreatedPage(),
       AppRoutes.dashboard: (context) => DashBoardPage(),
+      AppRoutes.farmlands: (context) => FarmlandListingPage(),
     };
   }
 }

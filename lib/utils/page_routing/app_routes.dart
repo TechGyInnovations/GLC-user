@@ -1,6 +1,6 @@
 class AppRoutes {
   AppRoutes._();
-  static const String initial = splash;
+  static const String initial = farmlands;
   static const String splash = "/splash";
   static const String signUp = "/signUp";
   static const String login = "/login";
@@ -9,4 +9,5 @@ class AppRoutes {
   static const String change_password = "/change_password";
   static const String account_created = "/account_created";
   static const String dashboard = "/dashboard";
+  static const String farmlands = "/farmlands";
 }

@@ -57,7 +57,7 @@ class FarmlandListingPage extends StatelessWidget {
                 children: [
                   FarmlandCard(
                     tag: "New",
-                    imageUrl: "https://via.placeholder.com/300",
+                    imageUrl: "https://static.wixstatic.com/media/fa14b7_523f47bbf46942ea8084abb8ae8b8636~mv2.jpg/v1/fill/w_1600,h_900,al_c,q_90/file.jpg",
                     title: "GLCSOS 01",
                     location: "Tanuku, West Godavari, AP",
                     crops: ["Corn", "Potato"],
@@ -65,7 +65,7 @@ class FarmlandListingPage extends StatelessWidget {
                   ),
                   FarmlandCard(
                     tag: "Trending",
-                    imageUrl: "https://via.placeholder.com/300",
+                    imageUrl: "https://static.wixstatic.com/media/fa14b7_523f47bbf46942ea8084abb8ae8b8636~mv2.jpg/v1/fill/w_1600,h_900,al_c,q_90/file.jpg",
                     title: "GLCSOS 02",
                     location: "Tanuku, West Godavari, AP",
                     crops: ["Cotton", "Rice"],
@@ -73,7 +73,7 @@ class FarmlandListingPage extends StatelessWidget {
                   ),
                   FarmlandCard(
                     tag: "Certified By GLC",
-                    imageUrl: "https://via.placeholder.com/300",
+                    imageUrl: "https://static.wixstatic.com/media/fa14b7_523f47bbf46942ea8084abb8ae8b8636~mv2.jpg/v1/fill/w_1600,h_900,al_c,q_90/file.jpg",
                     title: "GLCSOS 03",
                     location: "Vijayawada, Krishna, AP",
                     crops: ["Wheat", "Potato"],
@@ -81,7 +81,7 @@ class FarmlandListingPage extends StatelessWidget {
                   ),
                   FarmlandCard(
                     tag: "New",
-                    imageUrl: "https://via.placeholder.com/300",
+                    imageUrl: "https://static.wixstatic.com/media/fa14b7_523f47bbf46942ea8084abb8ae8b8636~mv2.jpg/v1/fill/w_1600,h_900,al_c,q_90/file.jpg",
                     title: "GLCSOS 04",
                     location: "Tanuku, West Godavari, AP",
                     crops: ["Wheat", "Potato"],
@@ -136,7 +136,10 @@ class FarmlandCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                child: Image.network(imageUrl, height: 150, width: double.infinity, fit: BoxFit.cover),
+                child: Image.network(imageUrl,errorBuilder: (context, error, stackTrace) {
+                  return Icon(Icons.image_not_supported);
+                }, height: 150, width: double.infinity, fit: BoxFit.fill
+                ),
               ),
               Positioned(
                 top: 10,
