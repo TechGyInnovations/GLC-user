@@ -1,0 +1,1 @@
+ /Users/nani/Desktop/GLC-user/.dart_tool/flutter_build/0e3a4d7fc87dab62adc0f2569f17c6e3/native_assets.yaml: 
