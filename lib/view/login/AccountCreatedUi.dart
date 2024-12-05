@@ -2,20 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../utils/page_routing/app_routes.dart';
 
-void main() {
-  runApp(AccountCreatedApp());
-}
-
-class AccountCreatedApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AccountCreatedPage(),
-    );
-  }
-}
-
 class AccountCreatedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -38,7 +24,7 @@ class AccountCreatedPage extends StatelessWidget {
               image: DecorationImage(
                 image: AssetImage('assets/background.png'),
                 // Replace with your image asset path
-                fit: BoxFit.cover, // Makes the image cover the entire screen
+                fit: BoxFit.fill, // Makes the image cover the entire screen
               ),
             ),
           ),

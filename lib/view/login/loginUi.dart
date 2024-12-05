@@ -4,39 +4,6 @@ import 'package:flutter/services.dart';
 
 import '../../utils/page_routing/app_routes.dart';
 
-void loginUi() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Set the status bar to white with black icons
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, // Make status bar transparent
-        statusBarIconBrightness:
-            Brightness.dark, // White icons on dark background
-      ),
-    );
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginPage(),
-      builder: (context, child) {
-        SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent, // Make status bar transparent
-            statusBarIconBrightness:
-                Brightness.dark, // White icons on dark background
-          ),
-        );
-        return child!;
-      },
-    );
-  }
-}
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -51,7 +18,7 @@ class _LoginPageState extends State<LoginPage>
   TextEditingController passwordController = TextEditingController();
   bool isChecked = false;
   bool isPasswordHide = true;
-
+  bool isFormValid = false;
   @override
   void initState() {
     super.initState();
@@ -78,10 +45,14 @@ class _LoginPageState extends State<LoginPage>
 
     // Start the animations
     _controller.forward();
+    emailController.addListener(_validateForm);
+    passwordController.addListener(_validateForm);
   }
 
   @override
   void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -138,7 +109,7 @@ class _LoginPageState extends State<LoginPage>
                     position: _slideAnimation,
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           'Login',
                           style: TextStyle(
                             fontSize: 24,
@@ -148,7 +119,7 @@ class _LoginPageState extends State<LoginPage>
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           'Welcome back! Sign in using your Email',
                           style: TextStyle(
                             fontSize: 14,
@@ -158,7 +129,7 @@ class _LoginPageState extends State<LoginPage>
                         ),
                         const SizedBox(height: 20),
                         // Email Text Field
-                        Align(
+                        const Align(
                           alignment: Alignment.centerLeft,
                           // Aligns the text to the left
                           child: Text(
@@ -182,7 +153,7 @@ class _LoginPageState extends State<LoginPage>
                         ),
                         const SizedBox(height: 16),
                         // Password Text Field
-                        Align(
+                        const Align(
                           alignment: Alignment.centerLeft,
                           // Aligns the text to the left
                           child: Text(
@@ -216,7 +187,7 @@ class _LoginPageState extends State<LoginPage>
                           children: [
                             Row(
                               children: [
-                                Checkbox(activeColor:Colors.red,
+                                Checkbox(activeColor:Colors.black,
                                     value: isChecked,
                                     onChanged: (value) {
                                       isChecked = value!; // checkbox check changed
@@ -255,8 +226,8 @@ class _LoginPageState extends State<LoginPage>
                             // Use full width of the parent container
                             child: ElevatedButton(
                               onPressed: () {
-                                if (validations()) {
-                                  Navigator.pushNamed(context, AppRoutes.otp);
+                                if (isFormValid) {
+                                  Navigator.pushNamed(context, AppRoutes.farmlandsdetails);
                                 }
                               },
                               style: ElevatedButton.styleFrom(
@@ -266,9 +237,11 @@ class _LoginPageState extends State<LoginPage>
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Login',
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                  color: isFormValid ? Colors.white : Colors.black,
+                                ),
                               ),
                             ),
                           ),
@@ -280,11 +253,11 @@ class _LoginPageState extends State<LoginPage>
                         child: Text.rich(
                           TextSpan(
                             text: "Don't have an account? ",
-                            style: TextStyle(color: Colors.grey),
+                            style: const TextStyle(color: Colors.grey),
                             children: [
                               TextSpan(
                                 text: 'Sign Up',
-                                style: TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Navigator.pushNamed(context, AppRoutes.signUp);
@@ -305,11 +278,41 @@ class _LoginPageState extends State<LoginPage>
   }
 
   bool validations() {
-    if (emailController.text.trim().isEmpty ||
-        passwordController.text.trim().isEmpty) {
-      return true;
-    } else {
-      return true;
+    // Add your custom validation logic here
+    if(emailController.text.trim().isEmpty)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          'Please enter a Email ID',
+          style: TextStyle(color: Colors.black),
+        ),
+      ));
+      return isFormValid;
     }
+    else if(passwordController.text.trim().isEmpty)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          'Please enter password',
+          style: TextStyle(color: Colors.black),
+        ),
+      ));
+      return isFormValid;
+    }
+    else{
+      return isFormValid=true;
+    }
+
+  }
+
+  void _validateForm() {
+    setState(() {
+
+        isFormValid = emailController.text.trim().isNotEmpty &&
+            passwordController.text.trim().isNotEmpty ;
+
+    });
   }
 }

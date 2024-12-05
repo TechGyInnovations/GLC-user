@@ -4,10 +4,6 @@ import 'package:flutter/services.dart';
 
 import '../../utils/page_routing/app_routes.dart';
 
-void Changepassword() {
-  runApp(ChangePasswordApp());
-}
-
 class ChangePasswordApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -76,11 +72,12 @@ class _LoginPageState extends State<ChangePasswordPage>
     return Scaffold(
         extendBodyBehindAppBar: true, // Extends body behind the status bar
         body: Container(
+          height: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/background.png'),
               // Replace with your image asset path
-              fit: BoxFit.cover, // Makes the image cover the entire screen
+              fit: BoxFit.fill, // Makes the image cover the entire screen
             ),
           ),
           child: SingleChildScrollView(
@@ -190,7 +187,7 @@ class _LoginPageState extends State<ChangePasswordPage>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 180),
                   // Login Button with Scale Animation
                   Center(
                     child: ScaleTransition(
@@ -212,23 +209,6 @@ class _LoginPageState extends State<ChangePasswordPage>
                             style: TextStyle(color: Colors.black),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Sign Up Section
-                  Center(
-                    child: Text.rich(
-                      TextSpan(
-                        text: "Don't have an account? ",
-                        style: TextStyle(color: Colors.grey),
-                        children: [
-                          TextSpan(
-                            text: 'Sign Up',
-                            style: TextStyle(color: Colors.black),
-                            recognizer: TapGestureRecognizer()..onTap = () {},
-                          ),
-                        ],
                       ),
                     ),
                   ),

@@ -2,27 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void loginUi() {
-  runApp(MyApp());
-}
+import '../../utils/page_routing/app_routes.dart';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Set the status bar to white with black icons
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, // Make status bar transparent
-        statusBarIconBrightness: Brightness.dark, // White icons on dark background
-      ),
-    );
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SignupPage(),
-    );
-  }
-}
 
 class SignupPage extends StatefulWidget {
   @override
@@ -34,6 +15,12 @@ class _LoginPageState extends State<SignupPage>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController mobileController = TextEditingController();
+  bool isPasswordHide = true;
+  bool isFormValid = false;
 
   @override
   void initState() {
@@ -61,11 +48,19 @@ class _LoginPageState extends State<SignupPage>
 
     // Start the animations
     _controller.forward();
+    emailController.addListener(_validateForm);
+    passwordController.addListener(_validateForm);
+    mobileController.addListener(_validateForm);
+    nameController.addListener(_validateForm);
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    mobileController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
@@ -78,7 +73,7 @@ class _LoginPageState extends State<SignupPage>
             image: DecorationImage(
               image: AssetImage('assets/background.png'),
               // Replace with your image asset path
-              fit: BoxFit.cover, // Makes the image cover the entire screen
+              fit: BoxFit.fill, // Makes the image cover the entire screen
             ),
           ),
           child: SingleChildScrollView(
@@ -149,6 +144,7 @@ class _LoginPageState extends State<SignupPage>
                         ),
                         const SizedBox(height: 8),
                         TextField(
+                          controller: nameController,
                           decoration: InputDecoration(
                             hintText: 'Enter Full Name',
                             filled: true,
@@ -170,6 +166,7 @@ class _LoginPageState extends State<SignupPage>
                         ),
                         const SizedBox(height: 8),
                         TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             hintText: 'Enter Email',
                             filled: true,
@@ -191,6 +188,7 @@ class _LoginPageState extends State<SignupPage>
                         ),
                         const SizedBox(height: 8),
                         TextField(
+                          controller: mobileController,
                           decoration: InputDecoration(
                             hintText: 'Enter Phone Number',
                             filled: true,
@@ -213,12 +211,23 @@ class _LoginPageState extends State<SignupPage>
                         ),
                         const SizedBox(height: 8),
                         TextField(
-                          obscureText: true,
+                          controller: passwordController,
+                          obscureText: isPasswordHide,
                           decoration: InputDecoration(
                             hintText: 'Enter Password',
                             filled: true,
                             fillColor: Colors.grey[200],
-                            suffixIcon: Icon(Icons.visibility),
+                            // password visible condition and icon change
+                            suffixIcon: IconButton(
+                              icon: Icon(isPasswordHide
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                              onPressed: () {
+                                setState(() {
+                                  isPasswordHide = !isPasswordHide;
+                                });
+                              },
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide.none,
@@ -236,12 +245,20 @@ class _LoginPageState extends State<SignupPage>
                     child: ScaleTransition(
                       scale: _fadeAnimation,
                       child: SizedBox(
-                        width: double.infinity,
-                        // Use full width of the parent container
+                        width: double.infinity, // Use full width of the parent container
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if (validations()) {
+                              Navigator.pushNamed(context, AppRoutes.otp);
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[200],
+                            backgroundColor: (emailController.text.trim().isNotEmpty &&
+                                passwordController.text.trim().isNotEmpty &&
+                                mobileController.text.trim().isNotEmpty &&
+                                nameController.text.trim().isNotEmpty)
+                                ? Colors.green
+                                : Colors.grey[200],
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -249,7 +266,9 @@ class _LoginPageState extends State<SignupPage>
                           ),
                           child: Text(
                             'Sign Up',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: isFormValid ? Colors.white : Colors.black,
+                            ),
                           ),
                         ),
                       ),
@@ -277,5 +296,19 @@ class _LoginPageState extends State<SignupPage>
             ),
           ),
         ));
+  }
+
+  bool validations() {
+    // Add your custom validation logic here
+    return isFormValid=true;
+  }
+
+  void _validateForm() {
+    setState(() {
+      isFormValid = emailController.text.trim().isNotEmpty &&
+          passwordController.text.trim().isNotEmpty &&
+          mobileController.text.trim().isNotEmpty &&
+          nameController.text.trim().isNotEmpty;
+    });
   }
 }

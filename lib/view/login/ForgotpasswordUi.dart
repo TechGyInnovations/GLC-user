@@ -4,29 +4,6 @@ import 'package:flutter/services.dart';
 
 import '../../utils/page_routing/app_routes.dart';
 
-void ForgotpasswordUi() {
-  runApp(ForgotApp());
-}
-
-class ForgotApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Set the status bar to white with black icons
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, // Make status bar transparent
-        statusBarIconBrightness:
-            Brightness.dark, // White icons on dark background
-      ),
-    );
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ForgotPage(),
-    );
-  }
-}
-
 class ForgotPage extends StatefulWidget {
   @override
   _ForgotPageState createState() => _ForgotPageState();
@@ -77,11 +54,12 @@ class _ForgotPageState extends State<ForgotPage>
     return Scaffold(
         extendBodyBehindAppBar: true, // Extends body behind the status bar
         body: Container(
+          height: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/background.png'),
               // Replace with your image asset path
-              fit: BoxFit.cover, // Makes the image cover the entire screen
+              fit: BoxFit.fill, // Makes the image cover the entire screen
             ),
           ),
           child: SingleChildScrollView(
@@ -167,7 +145,7 @@ class _ForgotPageState extends State<ForgotPage>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 220),
                   // Login Button with Scale Animation
                   Center(
                     child: ScaleTransition(
@@ -193,7 +171,7 @@ class _ForgotPageState extends State<ForgotPage>
                                 child: SizedBox(
                                   width: double.infinity, // Use full width of the parent container
                                   child: ElevatedButton(
-                                    onPressed: () { Navigator.pushNamed(context, AppRoutes.change_password);},
+                                    onPressed: () { Navigator.pushNamed(context, AppRoutes.otpvalidate);},
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.grey[200],
                                       padding: const EdgeInsets.symmetric(vertical: 16),
